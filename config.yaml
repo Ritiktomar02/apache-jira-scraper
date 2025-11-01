@@ -1,0 +1,202 @@
+# Apache Jira Scraper Configuration
+
+jira:
+  base_url: "https://issues.apache.org/jira"
+
+  
+  # List of projects to scrape (choose any 3 Apache projects)
+  # Popular options: KAFKA, SPARK, HADOOP, FLINK, CASSANDRA, HBASE, ZOOKEEPER, 
+  # BEAM, AIRFLOW, ARROW, CAMEL, DRILL, HIVE, STORM
+  projects:
+    - "KAFKA"
+    - "SPARK" 
+    - "HADOOP"
+  
+  # API endpoints
+  api_version: "2"  # Jira REST API version
+  
+  # Fields to retrieve (comma-separated, or use expand parameter)
+  # This reduces response size and improves performance
+  fields:
+    - "summary"
+    - "description"
+    - "status"
+    - "priority"
+    - "issuetype"
+    - "created"
+    - "updated"
+    - "resolutiondate"
+    - "reporter"
+    - "assignee"
+    - "labels"
+    - "components"
+    - "versions"
+    - "fixVersions"
+    - "comment"
+    - "resolution"
+
+scraping:
+  # Number of issues to fetch per API request
+  # Jira default is 50, max is typically 100
+  batch_size: 50
+  
+  # Maximum number of retry attempts for failed requests
+  max_retries: 5
+  
+  # Initial delay between retries (seconds)
+  # Uses exponential backoff: delay * (2 ^ retry_number)
+  retry_delay: 2
+  
+  # Maximum delay cap for exponential backoff
+  max_retry_delay: 60
+  
+  # Request timeout in seconds
+  request_timeout: 30
+  
+  # Delay after receiving 429 rate limit response
+  rate_limit_delay: 60
+  
+  # General delay between requests (be nice to server)
+  request_delay: 0.5
+  
+  # Maximum comments to fetch per issue (prevents oversized records)
+  max_comments_per_issue: 50
+  
+  # Maximum issues to process per project (0 = unlimited)
+  # Useful for testing with smaller datasets
+  max_issues_per_project: 50
+  
+  # Enable parallel processing of projects
+  parallel_projects: false
+  
+  # Number of worker threads for parallel processing
+  num_workers: 3
+
+output:
+  # Directory for raw JSON responses
+  raw_data_dir: "data/raw"
+  
+  # Directory for processed JSONL files
+  processed_data_dir: "data/processed"
+  
+  # Directory for checkpoint/state files
+  checkpoint_dir: "data/checkpoints"
+  
+  # Output filename pattern
+  # Available variables: {project}, {timestamp}, {date}
+  output_filename_pattern: "{project}_issues_{date}.jsonl"
+  
+  # Pretty print JSON (more readable but larger files)
+  pretty_print: false
+  
+  # Include raw API response in output (for debugging)
+  include_raw_data: false
+
+logging:
+  # Logging level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  level: "DEBUG"
+  
+  # Directory for log files
+  log_dir: "logs"
+  
+  # Log filename pattern
+  log_filename_pattern: "scraper_{date}.log"
+  
+  # Maximum log file size before rotation (MB)
+  max_log_size: 10
+  
+  # Number of backup log files to keep
+  backup_count: 5
+  
+  # Log format
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+  # Date format in logs
+  date_format: "%Y-%m-%d %H:%M:%S"
+
+transformation:
+  # Strip HTML tags from text content
+  strip_html: true
+  
+  # Maximum length for description field (characters, 0 = unlimited)
+  max_description_length: 5000
+  
+  # Maximum length for comment body (characters, 0 = unlimited)
+  max_comment_length: 2000
+  
+  # Generate derived tasks for LLM training
+  generate_derived_tasks: false
+  
+  # Types of derived tasks to generate
+  derived_tasks:
+    summarization: true
+    classification: true
+    qa_generation: true
+  
+  # Summarization settings
+  summarization:
+    # Include comments in summarization input
+    include_comments: true
+    # Maximum number of comments to include
+    max_comments: 5
+  
+  # Q&A generation settings
+  qa_generation:
+    # Minimum number of Q&A pairs to generate per issue
+    min_pairs: 1
+    # Maximum number of Q&A pairs to generate per issue
+    max_pairs: 3
+    # Generate pairs from comments
+    use_comments: true
+
+validation:
+  # Require minimum fields for an issue to be valid
+  required_fields:
+    - "key"
+    - "summary"
+  
+  # Skip issues with missing required fields
+  skip_invalid: true
+  
+  # Validate JSON structure before writing
+  validate_json: true
+
+performance:
+  # Enable connection pooling
+  connection_pooling: true
+  
+  # Maximum connections in pool
+  max_pool_connections: 10
+  
+  # Enable response compression
+  compression: true
+  
+  # Cache project metadata (reduces API calls)
+  cache_metadata: true
+  
+  # Cache duration in seconds
+  cache_duration: 3600
+
+resume:
+  # Enable checkpoint-based resumability
+  enabled: true
+  
+  # Checkpoint save frequency (issues processed)
+  checkpoint_frequency: 10
+  
+  # Validate checkpoint on load
+  validate_checkpoint: true
+
+# Advanced settings (modify with caution)
+advanced:
+  # User agent string for requests
+  user_agent: "Apache-Jira-Scraper/1.0 (Educational Purpose)"
+  
+  # Verify SSL certificates
+  verify_ssl: true
+  
+  # Follow redirects
+  allow_redirects: true
+  
+  # Maximum redirects to follow
+  max_redirects: 5

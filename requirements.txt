@@ -1,0 +1,34 @@
+# Core dependencies
+requests==2.31.0              # HTTP library for API calls
+PyYAML==6.0.1                 # YAML configuration parsing
+python-dateutil==2.8.2        # Date/time parsing and formatting
+
+# HTML parsing and text cleaning
+beautifulsoup4==4.12.2        # HTML parsing and cleaning
+lxml==4.9.3                   # Fast XML/HTML parser
+html2text==2020.1.16          # Convert HTML to plain text
+
+# Data validation and processing
+jsonschema==4.19.1            # JSON schema validation
+tqdm==4.66.1                  # Progress bars
+
+# Logging and monitoring
+colorlog==6.7.0               # Colored logging output
+
+# Testing (optional but recommended)
+pytest==7.4.2                 # Testing framework
+pytest-cov==4.1.0             # Coverage reporting
+pytest-mock==3.11.1           # Mocking for tests
+responses==0.23.3             # Mock HTTP responses
+
+# Development tools
+black==23.9.1                 # Code formatting
+flake8==6.1.0                 # Linting
+isort==5.12.0                 # Import sorting
+mypy==1.5.1                   # Type checking
+
+# Optional: For parallel processing
+# joblib==1.3.2               # Parallel processing
+
+# Optional: For advanced rate limiting
+# ratelimit==2.2.1            # Rate limiting decorator
